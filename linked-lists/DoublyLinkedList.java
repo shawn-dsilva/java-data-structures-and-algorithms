@@ -32,6 +32,73 @@ public class DoublyLinkedList<E> {
       next = n;
     }
   }
+
+  private Node<E> header;
+  private Node<E> trailer;
+  private int size = 0;
+
+  public DoublyLinkedList() {
+    header = new Node<>(null, null, null);
+    trailer = new Node<>(null, header, null);
+    header.setNext(trailer);
+  }
+
+  public int size() {
+    return size;
+  }
+
+  public boolean isEmpty() {
+    return size == 0;
+  }
+
+  public E first() {
+    if (isEmpty())
+      return null;
+    return header.getNext().getElement();
+  }
+
+  public E last() {
+    if (isEmpty())
+      return null;
+    return header.getPrev().getElement();
+  }
+
+  public void addFirst(E e) {
+    addBetween(e, header, header.getNext());
+  }
+
+  public void addLast(E e) {
+    addBetween(e, trailer.getPrev(), trailer);
+  }
+
+  public E removeFirst() {
+    if (isEmpty())
+      return null;
+    return remove(header.getNext());
+  }
+
+  public E removeLast() {
+    if (isEmpty())
+      return null;
+    return remove(header.getPrev());
+  }
+
+  public void addBetween(E e, Node<E> predecessor, Node<E> successor) {
+    Node<E> newest = new Node<>(e, predecessor, successor);
+    predecessor.setNext(newest);
+    successor.setPrev(newest);
+    size++;
+  }
+
+  private E remove(Node<E> node) {
+    Node<E> predecessor = node.getPrev();
+    Node<E> successor = node.getNext();
+    predecessor.setNext(successor);
+    successor.setPrev(predecessor);
+    size--;
+    return node.getElement();
+  }
+
   public static void main(String args[])
     {
         System.out.println("Hello, World");
