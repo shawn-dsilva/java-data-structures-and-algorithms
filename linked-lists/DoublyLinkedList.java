@@ -1,46 +1,36 @@
-public class DoublyLinkedList<E> {
+public class DoublyLinkedList<T> implements Iterable <T> {
 
+  private int size = 0;
+  private Node<T> head = null;
+  private Node<T> tail = null;
 
-  private static class Node<E> {
-    private E element;
-    private Node<E> prev;
-    private Node<E> next;
+  private class Node<T> {
 
-    public Node(E e, Node<E> p, Node<E> n) {
-      element = e;
-      prev = p;
-      next = n;
+    T data;
+    Node<T> prev, next;
+
+    public Node(T data, Node<T> prev, Node<T> next) {
+      this.data = data;
+      this.prev = prev;
+      this.next = next;
     }
 
-    public E getElement() {
-      return element;
-    }
-
-    public Node<E> getPrev() {
-      return prev;
-    }
-
-    public Node<E> getNext() {
-      return next;
-    }
-
-    public void setPrev(Node<E> p) {
-      prev = p;
-    }
-
-    public void setNext(Node<E> n) {
-      next = n;
+    @Override
+    public String toString() {
+      return data.toString();
     }
   }
 
-  private Node<E> header;
-  private Node<E> trailer;
-  private int size = 0;
-
-  public DoublyLinkedList() {
-    header = new Node<>(null, null, null);
-    trailer = new Node<>(null, header, null);
-    header.setNext(trailer);
+  public void clear() {
+    Node<T> trav = head; // set's starting node to head
+    while (trav != null) {
+      Node<T> next = trav.next;
+      trav.prev = trav.next = null;
+      trav.data = null;
+      trav = next;
+    }
+    head = tail = trav = null;
+    size = 0;
   }
 
   public int size() {
@@ -48,59 +38,139 @@ public class DoublyLinkedList<E> {
   }
 
   public boolean isEmpty() {
-    return size == 0;
+    return size() == 0;
   }
 
-  public E first() {
-    if (isEmpty())
-      return null;
-    return header.getNext().getElement();
+  public void add(T elem) {
+    addLast(elem);
   }
 
-  public E last() {
-    if (isEmpty())
-      return null;
-    return header.getPrev().getElement();
-  }
+  public void addFirst(T elem) {
 
-  public void addFirst(E e) {
-    addBetween(e, header, header.getNext());
-  }
+    if (isEmpty()) {
+      head = tail = new Node<T>(elem, null, null);
+    } else {
 
-  public void addLast(E e) {
-    addBetween(e, trailer.getPrev(), trailer);
-  }
-
-  public E removeFirst() {
-    if (isEmpty())
-      return null;
-    return remove(header.getNext());
-  }
-
-  public E removeLast() {
-    if (isEmpty())
-      return null;
-    return remove(header.getPrev());
-  }
-
-  public void addBetween(E e, Node<E> predecessor, Node<E> successor) {
-    Node<E> newest = new Node<>(e, predecessor, successor);
-    predecessor.setNext(newest);
-    successor.setPrev(newest);
-    size++;
-  }
-
-  private E remove(Node<E> node) {
-    Node<E> predecessor = node.getPrev();
-    Node<E> successor = node.getNext();
-    predecessor.setNext(successor);
-    successor.setPrev(predecessor);
-    size--;
-    return node.getElement();
-  }
-
-  public static void main(String args[])
-    {
-        System.out.println("Hello, World");
+      //Current Head has it's prev set to a new Node
+      //which has it's next reference set to current head
+      //current head is then set to the value in head.prev which is the new node
+      //which makes the new node the current head
+      head.prev = new Node<T>(elem, null, head);
+      head = head.prev;
     }
+
+    size++;
+
+  }
+
+  public void addLast(T elem) {
+
+    if (isEmpty()) {
+      head = tail = new Node<T>(elem, null, null);
+    } else {
+
+      //Current Tail has it's next set to a new Node
+      //which has it's prev reference set to current tail
+      //current tail is then set to the value in tail.next which is the new node.
+      // which makes the new node the current head
+      tail.next = new Node<T>(elem, tail, null);
+      tail = tail.next;
+    }
+
+    size++;
+
+  }
+
+  public T peekFirst() {
+    if (isEmpty())
+      throw new RuntimeException("Empty List");
+    return head.data;
+  }
+
+  public T peekLast() {
+    if (isEmpty())
+      throw new RuntimeException("Empty List");
+    return tail.data;
+  }
+
+  public T removeFirst() {
+
+    if (isEmpty())
+      throw new RuntimeException("Empty List");
+
+    // store data in a data variable
+    T data = head.data;
+
+    // set current head to the next node
+    head = head.next;
+    --size;
+
+    if (isEmpty()) {
+      tail = null;
+    } else {
+      head.prev = null; // set previous to null since it is the new head
+    }
+
+    return data;
+
+  }
+
+  public T removeLast() {
+
+    if (isEmpty())
+      throw new RuntimeException("Empty List");
+
+    // store data in a data variable
+    T data = tail.data;
+
+    // set current tail to the previous node
+    tail = tail.prev;
+    --size;
+
+    if (isEmpty()) {
+      head = null;
+    } else {
+      tail.next = null; // set next of current tail to null since it is the new tail
+    }
+
+    return data;
+
+  }
+
+  private T remove(Node<T> node) {
+
+    // Do the [ n e e d f u l ] if the given node is either head or tail
+    if (node.prev == null)
+      return removeFirst();
+    if (node.next == null)
+      return removeLast();
+
+    //Else if the given node is a non-head or tail node
+
+    // set the next node's prev reference to the current node's previous
+    // instead of it pointing to current node
+    // i.e remove the current node's previous relation to both it's preceding and succeeding nodes
+    node.next.prev = node.prev;
+
+    // set the previous node's next to point to the current node's next,
+    // that is the previous node's next will point to the node succeeding the current node
+    // since the current node will be deleted
+    node.prev.next = node.next;
+
+    // store data in temp variable to return
+    T data = node.data;
+
+    // set data to null
+    node.data = null;
+    // set prev and next references of current node to null
+    node = node.prev = node.next = null;
+
+    //This node will now be garbage collected? i guess.
+
+    //decrease the size variable
+    --size;
+
+    return data;
+  }
+
 }
