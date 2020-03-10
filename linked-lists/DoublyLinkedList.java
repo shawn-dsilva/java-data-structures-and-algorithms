@@ -173,4 +173,98 @@ public class DoublyLinkedList<T> implements Iterable <T> {
     return data;
   }
 
+  public T removeAt(int index) {
+
+    if (index < 0 || index >= size)
+      throw new IllegalArgumentException();
+
+    int i;
+    Node<T> trav;
+
+    if (index < size / 2) {
+      for (i = 0, trav = head; i != index; i++) {
+        trav = trav.next;
+      }
+    } else {
+      for (i = size - 1, trav = tail; i != index; i--) {
+        trav = trav.prev;
+      }
+    }
+
+    return remove(trav);
+
+  }
+
+  public boolean remove(Object obj) {
+
+    Node<T> trav = head;
+
+    if (obj == null) {
+      for (trav = head; trav != null; trav = trav.next) {
+        if (trav.data == null) {
+          remove(trav);
+          return true;
+        }
+      }
+    } else {
+      for (trav = head; trav != null; trav = trav.next) {
+        if (obj.equals(trav.data)) {
+          remove(trav);
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  public int indexOf(Object obj) {
+
+    int index = 0;
+    Node<T> trav = head;
+
+    if (obj == null) {
+      for (trav = head; trav != null; trav = trav.next, index++) {
+        if(trav.data == null)
+          return index;
+      }
+    } else {
+      for (trav = head; trav != null; trav = trav.next, index++) {
+        if(obj.equals(trav.data))
+          return index;
+      }
+    }
+    return -1;
+  }
+
+  @Override
+  public java.util.Iterator<T> iterator() {
+    return new java.util.Iterator<T>() {
+      private Node<T> trav = head;
+
+      @Override
+      public boolean hasNext() {
+        return trav != null;
+      }
+
+      @Override
+      public T next() {
+        T data = trav.data;
+        trav = trav.next;
+        return data;
+      }
+    };
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("[");
+    Node<T> trav = head;
+    while (trav != null) {
+      sb.append(trav.data + ", ");
+      trav = trav.next;
+    }
+    sb.append(" ]");
+    return sb.toString();
+  }
 }
