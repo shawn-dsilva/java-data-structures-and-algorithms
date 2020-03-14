@@ -1,3 +1,5 @@
+package LinkedList;
+
 public class DoublyLinkedList<T> implements Iterable <T> {
 
   private int size = 0;
@@ -9,7 +11,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
     T data;
     Node<T> prev, next;
 
-    public Node(T data, Node<T> prev, Node<T> next) {
+    public Node(final T data, final Node<T> prev, final Node<T> next) {
       this.data = data;
       this.prev = prev;
       this.next = next;
@@ -24,7 +26,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
   public void clear() {
     Node<T> trav = head; // set's starting node to head
     while (trav != null) {
-      Node<T> next = trav.next;
+      final Node<T> next = trav.next;
       trav.prev = trav.next = null;
       trav.data = null;
       trav = next;
@@ -41,11 +43,11 @@ public class DoublyLinkedList<T> implements Iterable <T> {
     return size() == 0;
   }
 
-  public void add(T elem) {
+  public void add(final T elem) {
     addLast(elem);
   }
 
-  public void addFirst(T elem) {
+  public void addFirst(final T elem) {
 
     if (isEmpty()) {
       head = tail = new Node<T>(elem, null, null);
@@ -63,7 +65,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
 
   }
 
-  public void addLast(T elem) {
+  public void addLast(final T elem) {
 
     if (isEmpty()) {
       head = tail = new Node<T>(elem, null, null);
@@ -99,7 +101,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
       throw new RuntimeException("Empty List");
 
     // store data in a data variable
-    T data = head.data;
+    final T data = head.data;
 
     // set current head to the next node
     head = head.next;
@@ -121,7 +123,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
       throw new RuntimeException("Empty List");
 
     // store data in a data variable
-    T data = tail.data;
+    final T data = tail.data;
 
     // set current tail to the previous node
     tail = tail.prev;
@@ -158,7 +160,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
     node.prev.next = node.next;
 
     // store data in temp variable to return
-    T data = node.data;
+    final T data = node.data;
 
     // set data to null
     node.data = null;
@@ -173,7 +175,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
     return data;
   }
 
-  public T removeAt(int index) {
+  public T removeAt(final int index) {
 
     if (index < 0 || index >= size)
       throw new IllegalArgumentException();
@@ -195,7 +197,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
 
   }
 
-  public boolean remove(Object obj) {
+  public boolean remove(final Object obj) {
 
     Node<T> trav = head;
 
@@ -217,7 +219,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
     return false;
   }
 
-  public int indexOf(Object obj) {
+  public int indexOf(final Object obj) {
 
     int index = 0;
     Node<T> trav = head;
@@ -248,7 +250,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
 
       @Override
       public T next() {
-        T data = trav.data;
+        final T data = trav.data;
         trav = trav.next;
         return data;
       }
@@ -257,7 +259,7 @@ public class DoublyLinkedList<T> implements Iterable <T> {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     sb.append("[");
     Node<T> trav = head;
     while (trav != null) {
